@@ -8,7 +8,7 @@ use tss_esapi::{
 };
 
 #[derive(Error, Debug)]
-pub(crate) enum Error {
+pub enum Error {
     #[error("HttpServer error: {0}")]
     ActixWeb(actix_web::Error),
     #[error("TPM Error: {err:?}, kind: {kind:?}, {message}")]

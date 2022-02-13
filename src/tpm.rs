@@ -66,7 +66,7 @@ use tss_esapi::{
  * Example call:
  * let mut ctx = tpm::get_tpm2_ctx();
  */
-pub(crate) fn get_tpm2_ctx() -> Result<Context> {
+pub fn get_tpm2_ctx() -> Result<Context> {
     let tcti_path = match std::env::var("TCTI") {
         Ok(val) => val,
         Err(_) => if std::path::Path::new("/dev/tpmrm0").exists() {
@@ -87,7 +87,7 @@ pub(crate) fn get_tpm2_ctx() -> Result<Context> {
  * Example call:
  * let (key, cert, tpm_pub) = tpm::create_ek(context, Some(AsymmetricAlgorithm::Rsa))
  */
-pub(crate) fn create_ek(
+pub fn create_ek(
     context: &mut Context,
     alg: AsymmetricAlgorithm,
 ) -> Result<(KeyHandle, Option<Vec<u8>>, Vec<u8>)> {
@@ -167,7 +167,7 @@ assert_eq_size!(TPML_DIGEST, [u8; 532]);
 // so the below code recreates the idiosyncratic format tpm2-tools expects. The lengths
 // of the vectors were determined by introspection into running tpm2-tools code. This is
 // not ideal, and we should aim to move away from it if possible.
-pub(crate) fn pcrdata_to_vec(
+pub fn pcrdata_to_vec(
     selection_list: PcrSelectionList,
     pcrdata: PcrData,
 ) -> Vec<u8> {
@@ -207,7 +207,7 @@ pub(crate) fn pcrdata_to_vec(
  * Example call:
  * let ek_handle = tpm::ek_from_hex_str("0x81000000");
  */
-pub(crate) fn ek_from_hex_str(val: &str) -> Result<KeyHandle> {
+pub fn ek_from_hex_str(val: &str) -> Result<KeyHandle> {
     let val = val.trim_start_matches("0x");
     Ok(KeyHandle::from(u32::from_str_radix(val, 16)?))
 }
@@ -219,7 +219,7 @@ pub(crate) fn ek_from_hex_str(val: &str) -> Result<KeyHandle> {
  * Example call:
  * let (key, name, tpm_pub) = tpm::create_ak(context, ek_handle)
 */
-pub(crate) fn create_ak(
+pub fn create_ak(
     ctx: &mut Context,
     handle: KeyHandle,
     hash_alg: HashingAlgorithm,
@@ -235,7 +235,7 @@ pub(crate) fn create_ak(
     Ok((ak_handle, name, tpm2_pub_vec))
 }
 
-pub(crate) fn store_ak(
+pub fn store_ak(
     ctx: &mut Context,
     ak_handle: KeyHandle,
 ) -> Result<TpmsContext> {
@@ -243,7 +243,7 @@ pub(crate) fn store_ak(
     Ok(ak_context)
 }
 
-pub(crate) fn load_ak(
+pub fn load_ak(
     ctx: &mut Context,
     ak: TpmsContext,
 ) -> Result<(KeyHandle, Name, Vec<u8>)> {
@@ -308,7 +308,7 @@ fn create_empty_session(
     Ok(session.unwrap()) //#[allow_ci]
 }
 
-pub(crate) fn activate_credential(
+pub fn activate_credential(
     ctx: &mut Context,
     keyblob: Vec<u8>,
     ak: KeyHandle,
@@ -345,7 +345,7 @@ pub(crate) fn activate_credential(
 // Takes a public PKey and returns a DigestValue of it.
 // Note: Currently, this creates a DigestValue including both SHA256 and
 // SHA1 because these banks are checked by Keylime on the Python side.
-pub(crate) fn pubkey_to_tpm_digest(
+pub fn pubkey_to_tpm_digest(
     pubkey: &PKeyRef<Public>,
 ) -> Result<DigestValues> {
     let mut keydigest = DigestValues::new();
@@ -387,7 +387,7 @@ pub(crate) fn pubkey_to_tpm_digest(
 // and verifier. The output from this function can be used to call a
 // Quote from the TSS ESAPI.
 //
-pub(crate) fn read_mask(mask: &str) -> Result<Vec<PcrSlot>> {
+pub fn read_mask(mask: &str) -> Result<Vec<PcrSlot>> {
     let mut pcrs = Vec::new();
 
     let num = u32::from_str_radix(mask.trim_start_matches("0x"), 16)?;
@@ -431,7 +431,7 @@ pub(crate) fn read_mask(mask: &str) -> Result<Vec<PcrSlot>> {
 }
 
 //This checks if a PCR is contained in a mask
-pub(crate) fn check_mask(mask: &str, pcr: &PcrSlot) -> Result<bool> {
+pub fn check_mask(mask: &str, pcr: &PcrSlot) -> Result<bool> {
     let selected_pcrs = read_mask(mask)?;
     Ok(selected_pcrs.contains(pcr))
 }
@@ -443,7 +443,7 @@ pub(crate) fn check_mask(mask: &str, pcr: &PcrSlot) -> Result<bool> {
 // Reference:
 // https://github.com/keylime/keylime/blob/2dd9e5c968f33bf77110092af9268d13db1806c6 \
 // /keylime/tpm/tpm_main.py#L964-L975
-pub(crate) fn encode_quote_string(
+pub fn encode_quote_string(
     att: Attest,
     sig: Signature,
     pcrs_read: PcrSelectionList,
@@ -476,7 +476,7 @@ pub(crate) fn encode_quote_string(
 // from the given mask and pcr16.
 // Note: Currently, this will build the list for both SHA256 and SHA1 as
 // necessary for the Python components of Keylime.
-pub(crate) fn build_pcr_list(
+pub fn build_pcr_list(
     context: &mut Context,
     digest: DigestValues,
     mask: Option<&str>,
@@ -520,7 +520,7 @@ pub(crate) fn build_pcr_list(
 // https://github.com/keylime/keylime/blob/2dd9e5c968f33bf77110092af9268d13db1806c6/ \
 // keylime/tpm/tpm_main.py#L965
 //
-pub(crate) fn make_pcr_blob(
+pub fn make_pcr_blob(
     context: &mut Context,
     pcrlist: PcrSelectionList,
 ) -> Result<(PcrSelectionList, PcrData)> {
@@ -629,7 +629,7 @@ fn perform_quote_and_pcr_read(
 // Despite the return type, this function is used for both Identity and
 // Integrity Quotes. The Quote handler will add additional information to
 // turn an Identity Quote into an Integrity Quote.
-pub(crate) fn quote(
+pub fn quote(
     nonce: &[u8],
     mask: Option<&str>,
     data: Data<QuoteData>,
@@ -749,7 +749,7 @@ pub mod testing {
         Ok((pcrlist, pcrdata))
     }
 
-    pub(crate) fn decode_quote_string(
+    pub fn decode_quote_string(
         quote: &str,
     ) -> Result<(AttestBuffer, Signature, PcrSelectionList, PcrData)> {
         if !quote.starts_with('r') {
@@ -786,7 +786,7 @@ pub mod testing {
     //
     // Reference:
     // https://github.com/tpm2-software/tpm2-tools/blob/master/tools/tpm2_checkquote.c
-    pub(crate) fn check_quote(
+    pub fn check_quote(
         context: &mut Context,
         ak_handle: KeyHandle,
         quote: &str,
