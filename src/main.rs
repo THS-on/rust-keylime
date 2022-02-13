@@ -33,17 +33,17 @@
 //  missing_docs: there is many functions missing documentations for now
 #![allow(unused, missing_docs)]
 
-mod algorithms;
-mod common;
-mod crypto;
-mod error;
+pub mod algorithms;
+pub mod common;
+pub mod crypto;
+pub mod error;
 mod keys_handler;
-mod quotes_handler;
-mod registrar_agent;
+mod  quotes_handler;
+pub mod registrar_agent;
 mod revocation;
 mod secure_mount;
-mod serialization;
-mod tpm;
+pub mod serialization;
+pub mod tpm;
 
 use actix_web::{web, App, HttpServer};
 use common::*;

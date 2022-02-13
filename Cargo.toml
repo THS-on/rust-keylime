@@ -17,6 +17,10 @@ name = "keylime_ima_emulator"
 path = "src/ima_emulator.rs"
 doc = false
 
+[lib]
+name = "keylime_lib"
+path = "src/main.rs"
+
 [dependencies]
 actix-web =  { version = "3", features = ["openssl"] }
 base64 = "0.13"
