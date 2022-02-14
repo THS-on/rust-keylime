@@ -26,7 +26,7 @@ pub struct Integ {
 // The fields of this struct and their default values must
 // match what is expected by Python Keylime.
 #[derive(Serialize, Deserialize, Debug)]
-pub(crate) struct KeylimeIdQuote {
+pub struct KeylimeIdQuote {
     pub quote: String, // 'r' + quote + sig + pcrblob
     pub hash_alg: String,
     pub enc_alg: String,
@@ -40,7 +40,7 @@ pub(crate) struct KeylimeIdQuote {
 // field included in the returned data, we must use a struct
 // without this field after attestation is complete.
 #[derive(Serialize, Deserialize, Debug)]
-pub(crate) struct KeylimeIntegrityQuotePreAttestation {
+pub struct KeylimeIntegrityQuotePreAttestation {
     pub quote: String, // 'r' + quote + sig + pcrblob
     pub hash_alg: String,
     pub enc_alg: String,
@@ -74,7 +74,7 @@ impl KeylimeIntegrityQuotePreAttestation {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub(crate) struct KeylimeIntegrityQuotePostAttestation {
+pub struct KeylimeIntegrityQuotePostAttestation {
     pub quote: String, // 'r' + quote + sig + pcrblob
     pub hash_alg: String,
     pub enc_alg: String,

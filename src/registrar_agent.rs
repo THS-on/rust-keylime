@@ -48,7 +48,7 @@ pub struct Response<T> {
     results: T,
 }
 
-pub(crate) async fn do_activate_agent(
+pub async fn do_activate_agent(
     registrar_ip: &str,
     registrar_port: &str,
     agent_uuid: &str,
@@ -85,7 +85,7 @@ pub(crate) async fn do_activate_agent(
 }
 
 #[allow(clippy::too_many_arguments)]
-pub(crate) async fn do_register_agent(
+pub async fn do_register_agent(
     registrar_ip: &str,
     registrar_port: &str,
     agent_uuid: &str,

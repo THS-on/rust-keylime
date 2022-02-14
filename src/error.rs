@@ -76,7 +76,7 @@ pub enum Error {
 impl actix_web::ResponseError for Error {}
 
 impl Error {
-    pub(crate) fn http_code(&self) -> Result<u16> {
+    pub fn http_code(&self) -> Result<u16> {
         match self {
             Error::Registrar { addr, code } => Ok(*code),
             other => Err(Error::Other(format!(
@@ -86,7 +86,7 @@ impl Error {
         }
     }
 
-    pub(crate) fn exe_code(&self) -> Result<Option<i32>> {
+    pub fn exe_code(&self) -> Result<Option<i32>> {
         match self {
             Error::Execution(code, _) => Ok(code.to_owned()),
             other => Err(Error::Other(format!(
@@ -96,7 +96,7 @@ impl Error {
         }
     }
 
-    pub(crate) fn stderr(&self) -> Result<String> {
+    pub fn stderr(&self) -> Result<String> {
         match self {
             Error::Execution(_, stderr) => Ok(stderr.to_owned()),
             other => Err(Error::Other(format!(
@@ -129,4 +129,4 @@ impl From<tss_esapi::Error> for Error {
     }
 }
 
-pub(crate) type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, Error>;

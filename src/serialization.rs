@@ -9,7 +9,7 @@ struct WrappedBase64Encoded(
     #[serde(deserialize_with = "deserialize_as_base64")] Vec<u8>,
 );
 
-pub(crate) fn serialize_as_base64<S>(
+pub fn serialize_as_base64<S>(
     bytes: &[u8],
     serializer: S,
 ) -> Result<S::Ok, S::Error>
@@ -19,7 +19,7 @@ where
     serializer.serialize_str(&base64::encode(bytes))
 }
 
-pub(crate) fn deserialize_as_base64<'de, D>(
+pub fn deserialize_as_base64<'de, D>(
     deserializer: D,
 ) -> Result<Vec<u8>, D::Error>
 where
@@ -30,7 +30,7 @@ where
     })
 }
 
-pub(crate) fn serialize_maybe_base64<S>(
+pub fn serialize_maybe_base64<S>(
     value: &Option<Vec<u8>>,
     serializer: S,
 ) -> Result<S::Ok, S::Error>
@@ -43,7 +43,7 @@ where
     }
 }
 
-pub(crate) fn deserialize_maybe_base64<'de, D>(
+pub fn deserialize_maybe_base64<'de, D>(
     deserializer: D,
 ) -> Result<Option<Vec<u8>>, D::Error>
 where

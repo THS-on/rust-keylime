@@ -25,7 +25,7 @@ use crate::{
 };
 
 // Read a X509 cert or cert chain and outputs the first certificate
-pub(crate) fn load_x509(input_cert_path: &Path) -> Result<X509> {
+pub fn load_x509(input_cert_path: &Path) -> Result<X509> {
     let contents = fs::read_to_string(&input_cert_path)?;
     let mut cert_chain = X509::stack_from_pem(contents.as_bytes())?;
 
@@ -40,11 +40,11 @@ pub(crate) fn load_x509(input_cert_path: &Path) -> Result<X509> {
     Ok(cert)
 }
 
-pub(crate) fn rsa_generate(key_size: u32) -> Result<PKey<Private>> {
+pub fn rsa_generate(key_size: u32) -> Result<PKey<Private>> {
     PKey::from_rsa(Rsa::generate(key_size)?).map_err(Error::Crypto)
 }
 
-pub(crate) fn rsa_generate_pair(
+pub fn rsa_generate_pair(
     key_size: u32,
 ) -> Result<(PKey<Public>, PKey<Private>)> {
     let private = rsa_generate(key_size)?;
@@ -52,7 +52,7 @@ pub(crate) fn rsa_generate_pair(
     Ok((public, private))
 }
 
-pub(crate) fn pkey_pub_from_priv(
+pub fn pkey_pub_from_priv(
     privkey: PKey<Private>,
 ) -> Result<PKey<Public>> {
     match privkey.id() {
@@ -73,7 +73,7 @@ pub(crate) fn pkey_pub_from_priv(
     }
 }
 
-pub(crate) fn generate_x509(key: &PKey<Private>, uuid: &str) -> Result<X509> {
+pub fn generate_x509(key: &PKey<Private>, uuid: &str) -> Result<X509> {
     let mut name = X509Name::builder()?;
     name.append_entry_by_nid(Nid::COMMONNAME, uuid)?;
     let name = name.build();
@@ -93,7 +93,7 @@ pub(crate) fn generate_x509(key: &PKey<Private>, uuid: &str) -> Result<X509> {
     Ok(builder.build())
 }
 
-pub(crate) fn generate_mtls_context(
+pub fn generate_mtls_context(
     mtls_cert: &X509,
     key: &PKey<Private>,
     keylime_ca_cert: X509,
@@ -132,7 +132,7 @@ pub(crate) fn generate_mtls_context(
  * PBKDF2 function defaults to SHA-1 unless otherwise specified, and
  * Python-Keylime uses this default.
  */
-pub(crate) fn kdf(
+pub fn kdf(
     input_password: String,
     input_salt: String,
 ) -> Result<String> {
@@ -159,7 +159,7 @@ pub(crate) fn kdf(
  *
  * Verify a remote message and signature against a local rsa cert
  */
-pub(crate) fn asym_verify(
+pub fn asym_verify(
     keypair: &PKeyRef<Public>,
     message: &str,
     signature: &str,
@@ -181,7 +181,7 @@ pub(crate) fn asym_verify(
  * Take in an RSA-encrypted ciphertext and an RSA private key and decrypt the
  * ciphertext based on PKCS1 OAEP.
  */
-pub(crate) fn rsa_oaep_decrypt(
+pub fn rsa_oaep_decrypt(
     priv_key: &PKey<Private>,
     data: &[u8],
 ) -> Result<Vec<u8>> {
@@ -209,7 +209,7 @@ pub(crate) fn rsa_oaep_decrypt(
  *
  * Sign message and return HMAC result string
  */
-pub(crate) fn compute_hmac(key: &[u8], data: &[u8]) -> Result<Vec<u8>> {
+pub fn compute_hmac(key: &[u8], data: &[u8]) -> Result<Vec<u8>> {
     let pkey = PKey::hmac(key)?;
     // SHA-384 is used as the underlying hash algorithm.
     //
@@ -221,7 +221,7 @@ pub(crate) fn compute_hmac(key: &[u8], data: &[u8]) -> Result<Vec<u8>> {
     signer.sign_to_vec().map_err(Error::Crypto)
 }
 
-pub(crate) fn verify_hmac(
+pub fn verify_hmac(
     key: &[u8],
     data: &[u8],
     hmac: &[u8],
@@ -242,7 +242,7 @@ pub(crate) fn verify_hmac(
     Ok(())
 }
 
-pub(crate) fn decrypt_aead(key: &[u8], data: &[u8]) -> Result<Vec<u8>> {
+pub fn decrypt_aead(key: &[u8], data: &[u8]) -> Result<Vec<u8>> {
     let cipher = match key.len() {
         AES_128_KEY_LEN => Cipher::aes_128_gcm(),
         AES_256_KEY_LEN => Cipher::aes_256_gcm(),
@@ -275,7 +275,7 @@ pub mod testing {
     use openssl::encrypt::Encrypter;
     use std::path::Path;
 
-    pub(crate) fn rsa_import_pair(
+    pub fn rsa_import_pair(
         path: impl AsRef<Path>,
     ) -> Result<(PKey<Public>, PKey<Private>)> {
         let contents = fs::read_to_string(path)?;
@@ -284,11 +284,11 @@ pub mod testing {
         Ok((public, private))
     }
 
-    pub(crate) fn pkey_pub_from_pem(pem: &[u8]) -> Result<PKey<Public>> {
+    pub fn pkey_pub_from_pem(pem: &[u8]) -> Result<PKey<Public>> {
         PKey::<Public>::public_key_from_pem(pem).map_err(Error::Crypto)
     }
 
-    pub(crate) fn rsa_oaep_encrypt(
+    pub fn rsa_oaep_encrypt(
         pub_key: &PKey<Public>,
         data: &[u8],
     ) -> Result<Vec<u8>> {
@@ -309,7 +309,7 @@ pub mod testing {
         Ok(encrypted)
     }
 
-    pub(crate) fn encrypt_aead(
+    pub fn encrypt_aead(
         key: &[u8],
         iv: &[u8],
         data: &[u8],

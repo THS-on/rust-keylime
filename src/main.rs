@@ -97,7 +97,7 @@ pub struct QuoteData {
 // Parameters are based on Python codebase:
 // https://github.com/keylime/keylime/blob/1ed43ac8f75d5c3bc3a3bbbbb5037f20cf3c5a6a/ \
 // keylime/crypto.py#L189
-pub(crate) fn decrypt_payload(
+pub fn decrypt_payload(
     encr: Arc<Mutex<Vec<u8>>>,
     symm_key: &SymmKey,
 ) -> Result<Vec<u8>> {
@@ -112,7 +112,7 @@ pub(crate) fn decrypt_payload(
 // sets up unzipped directory in secure mount location in preparation for
 // writing out symmetric key and encrypted payload. returns file paths for
 // both.
-pub(crate) fn setup_unzipped(
+pub fn setup_unzipped(
     config: &KeylimeConfig,
 ) -> Result<(PathBuf, PathBuf, PathBuf)> {
     let mount = secure_mount::mount(&config.secure_size)?;
@@ -132,7 +132,7 @@ pub(crate) fn setup_unzipped(
 }
 
 // write symm key data and decrypted payload data out to specified files
-pub(crate) fn write_out_key_and_payload(
+pub fn write_out_key_and_payload(
     dec_payload: &[u8],
     dec_payload_path: &Path,
     key: &SymmKey,
@@ -156,7 +156,7 @@ pub(crate) fn write_out_key_and_payload(
 }
 
 // run a script (such as the init script, if any) and check the status
-pub(crate) fn run(dir: &Path, script: &str, agent_uuid: &str) -> Result<()> {
+pub fn run(dir: &Path, script: &str, agent_uuid: &str) -> Result<()> {
     let script_path = dir.join(script);
     info!("Running script: {:?}", script_path);
 
@@ -195,7 +195,7 @@ pub(crate) fn run(dir: &Path, script: &str, agent_uuid: &str) -> Result<()> {
 
 // checks if keylime.conf indicates the payload should be unzipped, and does so if needed.
 // the input string is the directory where the unzipped file(s) should be stored.
-pub(crate) fn optional_unzip_payload(
+pub fn optional_unzip_payload(
     unzipped: &Path,
     config: &KeylimeConfig,
 ) -> Result<()> {
@@ -212,7 +212,7 @@ pub(crate) fn optional_unzip_payload(
     Ok(())
 }
 
-pub(crate) async fn run_encrypted_payload(
+pub async fn run_encrypted_payload(
     symm_key: Arc<Mutex<Option<SymmKey>>>,
     symm_key_cvar: Arc<Condvar>,
     payload: Arc<Mutex<Vec<u8>>>,
@@ -490,7 +490,7 @@ mod testing {
     use super::*;
 
     impl QuoteData {
-        pub(crate) fn fixture() -> Result<Self> {
+        pub fn fixture() -> Result<Self> {
             let test_config = KeylimeConfig::default();
             let mut ctx = tpm::get_tpm2_ctx()?;
 

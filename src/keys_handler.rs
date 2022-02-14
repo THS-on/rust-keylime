@@ -27,7 +27,7 @@ pub struct KeylimeVKey {
 // the agent's UUID using the decryption key must match the provided authentication
 // tag. Returning None is okay here in case we are still waiting on another handler to
 // process data.
-pub(crate) fn try_combine_keys(
+pub fn try_combine_keys(
     keyset1: &mut KeySet,
     keyset2: &mut KeySet,
     uuid: &[u8],

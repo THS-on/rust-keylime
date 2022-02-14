@@ -63,11 +63,11 @@ pub struct SymmKey {
 }
 
 impl SymmKey {
-    pub(crate) fn bytes(&self) -> &[u8] {
+    pub fn bytes(&self) -> &[u8] {
         self.bytes.as_slice()
     }
 
-    pub(crate) fn xor(&self, other: &Self) -> Result<Self> {
+    pub fn xor(&self, other: &Self) -> Result<Self> {
         if self.bytes().len() != other.bytes().len() {
             return Err(Error::Other(
                 "cannot xor differing length slices".to_string(),
@@ -102,26 +102,26 @@ impl TryFrom<&[u8]> for SymmKey {
 
 // TPM data that can be persisted and loaded on agent startup.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) struct TpmData {
+pub struct TpmData {
     pub ak_hash_alg: HashAlgorithm,
     pub ak_sign_alg: SignAlgorithm,
     pub ak_context: TpmsContext,
 }
 
 impl TpmData {
-    pub(crate) fn load(path: &Path) -> Result<TpmData> {
+    pub fn load(path: &Path) -> Result<TpmData> {
         let file = File::open(path)?;
         let data: TpmData = serde_json::from_reader(file)?;
         Ok(data)
     }
 
-    pub(crate) fn store(&self, path: &Path) -> Result<()> {
+    pub fn store(&self, path: &Path) -> Result<()> {
         let file = File::create(path)?;
         serde_json::to_writer_pretty(file, self)?;
         Ok(())
     }
 
-    pub(crate) fn valid(
+    pub fn valid(
         &self,
         hash_alg: HashAlgorithm,
         sign_alg: SignAlgorithm,
@@ -131,7 +131,7 @@ impl TpmData {
 }
 
 #[derive(Clone, Debug)]
-pub(crate) struct KeylimeConfig {
+pub struct KeylimeConfig {
     pub agent_ip: String,
     pub agent_port: String,
     pub registrar_ip: String,
@@ -427,7 +427,7 @@ fn config_get_env(section: &str, key: &str, env: &str) -> Result<String> {
  * This function is unsafely using libc. Result is returned indicating
  * execution result.
  */
-pub(crate) fn chownroot(path: &Path) -> Result<()> {
+pub fn chownroot(path: &Path) -> Result<()> {
     unsafe {
         // check privilege
         if libc::geteuid() != 0 {
@@ -449,24 +449,24 @@ pub(crate) fn chownroot(path: &Path) -> Result<()> {
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "testing")] {
-        pub(crate) fn ima_ml_path_get() -> PathBuf {
+        pub fn ima_ml_path_get() -> PathBuf {
             Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("test-data")
                 .join("ima")
                 .join("ascii_runtime_measurements")
         }
     } else {
-        pub(crate) fn ima_ml_path_get() -> PathBuf {
+        pub fn ima_ml_path_get() -> PathBuf {
             Path::new(IMA_ML).to_path_buf()
         }
     }
 }
 
-pub(crate) fn tpm_data_path_get() -> PathBuf {
+pub fn tpm_data_path_get() -> PathBuf {
     Path::new(WORK_DIR).join(TPM_DATA)
 }
 
-pub(crate) fn measuredboot_ml_path_get() -> PathBuf {
+pub fn measuredboot_ml_path_get() -> PathBuf {
     Path::new(MEASUREDBOOT_ML).to_path_buf()
 }
 
