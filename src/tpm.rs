@@ -582,7 +582,7 @@ fn check_if_pcr_data_and_attestation_match(
 
 const NUM_ATTESTATION_ATTEMPTS: i32 = 5;
 
-fn perform_quote_and_pcr_read(
+pub fn perform_quote_and_pcr_read(
     mut context: &mut Context,
     ak_handle: KeyHandle,
     nonce: &[u8],
