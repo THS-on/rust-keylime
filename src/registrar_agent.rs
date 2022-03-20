@@ -53,6 +53,7 @@ pub async fn do_activate_agent(
     registrar_port: &str,
     agent_uuid: &str,
     auth_tag: &str,
+    api_version: &str,
 ) -> crate::error::Result<()> {
     let data = Activate { auth_tag };
 
@@ -62,7 +63,7 @@ pub async fn do_activate_agent(
     #[cfg(not(test))]
     let addr = format!(
         "http://{}:{}/{}/agents/{}",
-        registrar_ip, registrar_port, API_VERSION, agent_uuid
+        registrar_ip, registrar_port, api_version, agent_uuid
     );
 
     info!(
@@ -95,6 +96,7 @@ pub async fn do_register_agent(
     mtls_cert_x509: &X509,
     ip: Option<String>,
     port: Option<u32>,
+    api_version: &str,
 ) -> crate::error::Result<Vec<u8>> {
     let mtls_cert = String::from_utf8(mtls_cert_x509.to_pem()?)?;
 
@@ -113,7 +115,7 @@ pub async fn do_register_agent(
     #[cfg(not(test))]
     let addr = format!(
         "http://{}:{}/{}/agents/{}",
-        registrar_ip, registrar_port, API_VERSION, agent_uuid
+        registrar_ip, registrar_port, api_version, agent_uuid
     );
 
     info!(

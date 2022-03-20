@@ -52,9 +52,7 @@ pub fn rsa_generate_pair(
     Ok((public, private))
 }
 
-pub fn pkey_pub_from_priv(
-    privkey: PKey<Private>,
-) -> Result<PKey<Public>> {
+pub fn pkey_pub_from_priv(privkey: PKey<Private>) -> Result<PKey<Public>> {
     match privkey.id() {
         Id::RSA => {
             let rsa = Rsa::from_public_components(
@@ -132,10 +130,7 @@ pub fn generate_mtls_context(
  * PBKDF2 function defaults to SHA-1 unless otherwise specified, and
  * Python-Keylime uses this default.
  */
-pub fn kdf(
-    input_password: String,
-    input_salt: String,
-) -> Result<String> {
+pub fn kdf(input_password: String, input_salt: String) -> Result<String> {
     let password = input_password.as_bytes();
     let salt = input_salt.as_bytes();
     let count = 2000;
@@ -221,11 +216,7 @@ pub fn compute_hmac(key: &[u8], data: &[u8]) -> Result<Vec<u8>> {
     signer.sign_to_vec().map_err(Error::Crypto)
 }
 
-pub fn verify_hmac(
-    key: &[u8],
-    data: &[u8],
-    hmac: &[u8],
-) -> Result<()> {
+pub fn verify_hmac(key: &[u8], data: &[u8], hmac: &[u8]) -> Result<()> {
     let pkey = PKey::hmac(key)?;
     // SHA-384 is used as the underlying hash algorithm.
     //

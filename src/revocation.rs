@@ -17,11 +17,7 @@ use std::process::{Command, Output, Stdio};
 use serde_json::Value;
 
 /// Runs a script with a json value as argument (used for revocation actions)
-pub fn run_action(
-    dir: &Path,
-    script: &str,
-    json: Value,
-) -> Result<Output> {
+pub fn run_action(dir: &Path, script: &str, json: Value) -> Result<Output> {
     let raw_json = serde_json::value::to_raw_value(&json)?;
 
     let mut child = Command::new(format!("{}{}", "./", script))
@@ -156,9 +152,7 @@ fn get_revocation_cert_path(config: &KeylimeConfig) -> Result<PathBuf> {
 /// See:
 /// - URL: https://github.com/keylime/keylime/blob/master/keylime/revocation_notifier.py
 ///   Function: await_notifications
-pub async fn run_revocation_service(
-    config: &KeylimeConfig,
-) -> Result<()> {
+pub async fn run_revocation_service(config: &KeylimeConfig) -> Result<()> {
     let mount = secure_mount::mount(&config.secure_size)?;
 
     // Connect to the service via 0mq

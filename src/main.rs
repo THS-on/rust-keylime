@@ -38,7 +38,7 @@ pub mod common;
 pub mod crypto;
 pub mod error;
 mod keys_handler;
-mod  quotes_handler;
+mod quotes_handler;
 pub mod registrar_agent;
 mod revocation;
 mod secure_mount;
@@ -367,6 +367,7 @@ async fn main() -> Result<()> {
             &mtls_cert,
             config.agent_contact_ip.clone(),
             config.agent_contact_port,
+            API_VERSION,
         )
         .await?;
         info!("SUCCESS: Agent {} registered", config.agent_uuid);
@@ -386,6 +387,7 @@ async fn main() -> Result<()> {
             &config.registrar_port,
             &config.agent_uuid,
             &auth_tag,
+            API_VERSION,
         )
         .await?;
         info!("SUCCESS: Agent {} activated", config.agent_uuid);
